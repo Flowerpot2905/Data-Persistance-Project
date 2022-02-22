@@ -12,9 +12,12 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
+    //public GameObject MainMenuButton;
+    
     
     private bool m_Started = false;
     private int m_Points;
+
     
     private bool m_GameOver = false;
 
@@ -72,5 +75,9 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        //MainMenuButton.SetActive(true);
+        
     }
+
+   
 }
