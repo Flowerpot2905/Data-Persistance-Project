@@ -6,15 +6,22 @@ using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
+    //create the GameManager variable
+    private GameManager gameManager;
+
+    //drag current player text object
+    public GameObject playerNameDisplay;
+
+    //drag high score text object
+    public GameObject highScoreData;
+
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
 
     public Text ScoreText;
     public GameObject GameOverText;
-    //public GameObject MainMenuButton;
-    
-    
+
     private bool m_Started = false;
     private int m_Points;
 
@@ -25,6 +32,18 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //find the GameManager in scene
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        //find the current player name
+        string currentPlayer = gameManager.persistentName;
+
+        //put current player name on screen
+        playerNameDisplay.GetComponent<Text>().text = currentPlayer + " is playing.";
+
+        //put the high score data on screen
+        highScoreData.GetComponent<Text>().text = "Best Score by " + gameManager.savedName + " : " + gameManager.highScore;
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -43,6 +62,8 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        
+
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -58,6 +79,10 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            gameManager.LoadLastPlayer();
+            //put the high score data on screen
+            highScoreData.GetComponent<Text>().text = "Best Score by " + gameManager.savedName + " : " + gameManager.highScore;
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -75,6 +100,11 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        gameManager.latestScore = m_Points;
+
+        gameManager.SaveScore();
+        //gameManager.LoadLastPlayer();
+
         //MainMenuButton.SetActive(true);
         
     }
